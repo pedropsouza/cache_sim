@@ -24,7 +24,8 @@
       cache-bits-list)))
 
 (defun run-sim (&optional (input-file "input-teste-assoc.txt"))
-  (prog ((lines (uiop:read-file-lines input-file)))
+  (prog ((lines (uiop:read-file-lines input-file))
+         (miss-kind-alist (mapcar (lambda (entry) (list (car entry) 0 0 0)) *cache*)))
         (setf *random-state* (seed-random-state 42))
         (princ "###")
         (mapcar
@@ -35,31 +36,30 @@
                          (and levels
                               (multiple-value-bind (outcome blk old-blk)
                                 (cache-sim-access (cadar levels) addr)
-                                (cache-sim-access (caddar levels) addr)
-                                
-                                (case outcome
-                                  (hit
-                                    ;(progn
-                                      ;(format t *fmtstr* addr addr "hit" (caar levels))
-                                      ;)
-                                    nil)
-                                  (miss
-                                    (prog ((kind "conflict"))
-                                          (format t *fmtstr* addr addr "miss" (caar levels))
-                                          (if (not (gethash addr *seen-addrs*)) (princ " (compulsory)"))
-                                          (format t " replace ~a -> ~a" old-blk blk)
-                                          (lookup (cdr levels))
-                                          (setf (gethash addr *seen-addrs*) t)))
-                                  )))))
-                (progn
-                  (lookup *cache*)
-                  ;(mapcar
-                  ;  (lambda (x)
-                  ;    (progn
-                  ;      (pprint (cons (car x) (cache-sim-debug-info (cadr x))))
-                  ;      (pprint (cons (intern (concatenate 'string (string (car x)) "-fa")) (cache-sim-debug-info (caddr x))))))
-                  ;  *cache*)))))
-                  ))))
+                                (let ((fully-assoc-outcome (cache-sim-access (caddar levels) addr)))
+                                  (case outcome
+                                    (hit
+                                      ;(progn
+                                        ;(format t *fmtstr* addr addr "hit" (caar levels))
+                                        ;)
+                                      nil)
+                                    (miss
+                                      (prog ((kind "capacity"))
+                                            (format t *fmtstr* addr addr "miss" (caar levels))
+                                            (cond
+                                              ((not (gethash addr *seen-addrs*)) 
+                                                (setq kind "compulsory")
+                                                (incf (cadr (assoc (caar levels) miss-kind-alist))))
+                                              ((eq fully-assoc-outcome 'hit)
+                                                (setq kind "conflict")
+                                                (incf (caddr (assoc (caar levels) miss-kind-alist))))
+                                              (t (incf (cadddr (assoc (caar levels) miss-kind-alist)))))
+
+                                            (format t " (~a) replace ~a -> ~a" kind old-blk blk)
+                                            (lookup (cdr levels))
+                                            (setf (gethash addr *seen-addrs*) t)))
+                                    ))))))
+                (progn (lookup *cache*)))))
           lines)
         (flet ((print-stats (level)
           (let* ((sim (cadr level))
@@ -78,6 +78,7 @@
                       (car level) conflict-miss-ratio)
               (format t "~&~4tcapacity misses for ~s = ~,4f"
                       (car level) capacity-miss-ratio)
+              (format t "misses info = ~a" (assoc (car level) miss-kind-alist))
               ))))
           (progn
             (mapcar #'print-stats *cache*))
