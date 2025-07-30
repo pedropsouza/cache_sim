@@ -1,0 +1,146 @@
+(load "noback.lsp")
+(defun init-globals (&key addr-bits cache-bits-list)
+  (defparameter *seen-addrs* (make-hash-table))
+  (defparameter *fmtstr*
+    (format nil "~~&~~~dd = ~~~d,'0b, ~~a @ ~~a";~~%~~a"
+      (ceiling (log (expt 2 addr-bits)) (log 10))
+      (ceiling (log (expt 2 addr-bits)) (log 2))))
+
+  (defparameter *cache*
+    (mapcar
+      (lambda (entry)
+        (cons (car entry)
+              (list
+                (new-cache-sim
+                  :addr-bits addr-bits
+                  :cache-bits (cadr entry)
+                  :assoc-bits (caddr entry)
+                  :block-bits (cadddr entry))
+                (new-cache-sim ; fully associative mirror
+                  :addr-bits addr-bits
+                  :cache-bits (cadr entry)
+                  :assoc-bits (- (cadr entry) (cadddr entry))
+                  :block-bits (cadddr entry)))))
+      cache-bits-list)))
+
+(defun run-sim (&optional (input-file "input-teste-assoc.txt"))
+  (prog ((lines (uiop:read-file-lines input-file)))
+        (setf *random-state* (seed-random-state 42))
+        (princ "###")
+        (mapcar
+          (lambda (addr-str)
+            (let ((addr (parse-integer addr-str)))
+              (labels
+                ((lookup (levels)
+                         (and levels
+                              (multiple-value-bind (outcome blk old-blk)
+                                (cache-sim-access (cadar levels) addr)
+                                (cache-sim-access (caddar levels) addr)
+                                
+                                (case outcome
+                                  (hit
+                                    ;(progn
+                                      ;(format t *fmtstr* addr addr "hit" (caar levels))
+                                      ;)
+                                    nil)
+                                  (miss
+                                    (prog ((kind "conflict"))
+                                          (format t *fmtstr* addr addr "miss" (caar levels))
+                                          (if (not (gethash addr *seen-addrs*)) (princ " (compulsory)"))
+                                          (format t " replace ~a -> ~a" old-blk blk)
+                                          (lookup (cdr levels))
+                                          (setf (gethash addr *seen-addrs*) t)))
+                                  )))))
+                (progn
+                  (lookup *cache*)
+                  ;(mapcar
+                  ;  (lambda (x)
+                  ;    (progn
+                  ;      (pprint (cons (car x) (cache-sim-debug-info (cadr x))))
+                  ;      (pprint (cons (intern (concatenate 'string (string (car x)) "-fa")) (cache-sim-debug-info (caddr x))))))
+                  ;  *cache*)))))
+                  ))))
+          lines)
+        (flet ((print-stats (level)
+          (let* ((sim (cadr level))
+                 (h (cache-sim-hit-count sim))
+                 (c (cache-sim-op-count sim))
+                 (m (- c h)))
+            (format t "~&for ~a:" (string (car level)))
+            (format t "~&~4thit ratio is ~d/~d = ~,4f" h c (/ h c))
+            (format t "~&~4tmiss ratio is ~d/~d = ~,4f" m c (cache-sim-miss-ratio sim))
+            (let* ((fa (nth 2 level))
+                   (conflict-miss-ratio   (cache-sim-miss-ratio fa))
+                   (capacity-miss-ratio   (- conflict-miss-ratio 0)))
+              ; conflict miss ratio = miss ratio - miss ratio fully associative
+              ; capacity miss ratio = miss ratio fully associative - miss ratio infinite capacity
+              (format t "~&~4tconflict misses for ~s = ~,4f"
+                      (car level) conflict-miss-ratio)
+              (format t "~&~4tcapacity misses for ~s = ~,4f"
+                      (car level) capacity-miss-ratio)
+              ))))
+          (progn
+            (mapcar #'print-stats *cache*))
+          (let ((all-hits (reduce #'+ *cache* :key (lambda (x) (cache-sim-hit-count (cadr x)))))
+                (all-ops (cache-sim-op-count (cadr (assoc 'l1 *cache*)))))
+            (format t "~&overall hit rate: ~d/~d = ~,4f" all-hits all-ops (/ all-hits all-ops)))
+          (format t "~&Done!"))))
+
+(defun sufficient-bits (num &optional change-notice-f)
+        (let* ((bits (ceiling (log num 2)))
+               (nearest (expt 2 bits)))
+          (if (not (equal nearest num))
+            (funcall change-notice-f num nearest))
+          bits))
+
+(defun alert-value-change (which)
+        (lambda (old new)
+          (format t "~&alert: ~s was rounded up from ~d to ~d, the nearest power of two."
+            which old new)))
+
+(defun parse-cache-definition (c-def)
+  (destructuring-bind
+    (num-sets block-size associativity)
+    (mapcar #'parse-integer (uiop:split-string c-def :separator ":"))
+    (list (sufficient-bits (* num-sets associativity (/ block-size 8))
+                           (alert-value-change "number of sets"))
+          (sufficient-bits associativity (alert-value-change "associativity"))
+          (sufficient-bits (/ block-size 8) (alert-value-change "block size")))))
+
+(defun give-level-names (c-defs)
+  (mapcar
+    (lambda (num def)
+      (cons
+        (intern (concatenate 'string "L" (prin1-to-string num)))
+        def))
+    (alexandria:iota (length c-defs) :start 1)
+    c-defs))
+
+(defun read-eval-print-loop ()
+  (loop (print (eval (read)))))
+
+(defun main (&key filepath cache-defs-str)
+  (let*
+    ((args (uiop:command-line-arguments))
+     (filepath (or filepath (car (last args))))
+     (c-defs
+       (give-level-names
+         (mapcar #'parse-cache-definition
+                 (or
+                   (uiop:split-string
+                     cache-defs-str
+                     :separator " ")
+                   (butlast args)))))
+     (addr-bits
+       (sufficient-bits
+         (reduce #'max 
+           (mapcar #'parse-integer 
+             (remove-if #'alexandria:emptyp
+               (uiop:read-file-lines filepath))))
+         (alert-value-change "address bits"))))
+    (format t "~&using ~d bits for addressing~%" addr-bits)
+    (init-globals
+      :addr-bits addr-bits
+      :cache-bits-list c-defs)
+    (run-sim filepath)
+    (read-eval-print-loop)))

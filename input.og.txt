@@ -1,0 +1,136 @@
+2025/07/07 14:56:33 access 0
+2025/07/07 14:56:33 Executing br with [0 22]
+2025/07/07 14:56:33 access 22
+2025/07/07 14:56:33 Executing load with [515 7]
+2025/07/07 14:56:33 access 24
+2025/07/07 14:56:33 Executing call with [15 2]
+2025/07/07 14:56:33 access 2
+2025/07/07 14:56:33 Executing sub with [518 1]
+2025/07/07 14:56:33 access 4
+2025/07/07 14:56:33 Executing brzero with [4 19]
+2025/07/07 14:56:34 access 6
+2025/07/07 14:56:34 Executing add with [514 1]
+2025/07/07 14:56:34 access 8
+2025/07/07 14:56:34 Executing push with [145 2]
+2025/07/07 14:56:34 access 62
+2025/07/07 14:56:34 access 10
+2025/07/07 14:56:34 Executing sub with [518 1]
+2025/07/07 14:56:34 access 12
+2025/07/07 14:56:34 Executing call with [15 2]
+2025/07/07 14:56:34 access 2
+2025/07/07 14:56:34 Executing sub with [518 1]
+2025/07/07 14:56:34 access 4
+2025/07/07 14:56:34 Executing brzero with [4 19]
+2025/07/07 14:56:34 access 6
+2025/07/07 14:56:34 Executing add with [514 1]
+2025/07/07 14:56:35 access 8
+2025/07/07 14:56:35 Executing push with [145 2]
+2025/07/07 14:56:35 access 60
+2025/07/07 14:56:35 access 10
+2025/07/07 14:56:35 Executing sub with [518 1]
+2025/07/07 14:56:35 access 12
+2025/07/07 14:56:35 Executing call with [15 2]
+2025/07/07 14:56:35 access 2
+2025/07/07 14:56:35 Executing sub with [518 1]
+2025/07/07 14:56:35 access 4
+2025/07/07 14:56:35 Executing brzero with [4 19]
+2025/07/07 14:56:35 access 6
+2025/07/07 14:56:35 Executing add with [514 1]
+2025/07/07 14:56:36 access 8
+2025/07/07 14:56:36 Executing push with [145 2]
+2025/07/07 14:56:36 access 58
+2025/07/07 14:56:36 access 10
+2025/07/07 14:56:36 Executing sub with [518 1]
+2025/07/07 14:56:36 access 12
+2025/07/07 14:56:36 Executing call with [15 2]
+2025/07/07 14:56:36 access 2
+2025/07/07 14:56:36 Executing sub with [518 1]
+2025/07/07 14:56:36 access 4
+2025/07/07 14:56:36 Executing brzero with [4 19]
+2025/07/07 14:56:36 access 6
+2025/07/07 14:56:36 Executing add with [514 1]
+2025/07/07 14:56:36 access 8
+2025/07/07 14:56:36 Executing push with [145 2]
+2025/07/07 14:56:36 access 56
+2025/07/07 14:56:37 access 10
+2025/07/07 14:56:37 Executing sub with [518 1]
+2025/07/07 14:56:37 access 12
+2025/07/07 14:56:37 Executing call with [15 2]
+2025/07/07 14:56:37 access 2
+2025/07/07 14:56:37 Executing sub with [518 1]
+2025/07/07 14:56:37 access 4
+2025/07/07 14:56:37 Executing brzero with [4 19]
+2025/07/07 14:56:37 access 6
+2025/07/07 14:56:37 Executing add with [514 1]
+2025/07/07 14:56:37 access 8
+2025/07/07 14:56:37 Executing push with [145 2]
+2025/07/07 14:56:37 access 54
+2025/07/07 14:56:37 access 10
+2025/07/07 14:56:37 Executing sub with [518 1]
+2025/07/07 14:56:38 access 12
+2025/07/07 14:56:38 Executing call with [15 2]
+2025/07/07 14:56:38 access 2
+2025/07/07 14:56:38 Executing sub with [518 1]
+2025/07/07 14:56:38 access 4
+2025/07/07 14:56:38 Executing brzero with [4 19]
+2025/07/07 14:56:38 access 6
+2025/07/07 14:56:38 Executing add with [514 1]
+2025/07/07 14:56:38 access 8
+2025/07/07 14:56:38 Executing push with [145 2]
+2025/07/07 14:56:38 access 52
+2025/07/07 14:56:38 access 10
+2025/07/07 14:56:38 Executing sub with [518 1]
+2025/07/07 14:56:39 access 12
+2025/07/07 14:56:39 Executing call with [15 2]
+2025/07/07 14:56:39 access 2
+2025/07/07 14:56:39 Executing sub with [518 1]
+2025/07/07 14:56:39 access 4
+2025/07/07 14:56:39 Executing brzero with [4 19]
+2025/07/07 14:56:39 access 19
+2025/07/07 14:56:39 Executing add with [514 1]
+2025/07/07 14:56:39 access 21
+2025/07/07 14:56:39 Executing ret with [16]
+2025/07/07 14:56:40 access 14
+2025/07/07 14:56:40 Executing pop with [146 7]
+2025/07/07 14:56:40 access 52
+2025/07/07 14:56:40 access 16
+2025/07/07 14:56:40 Executing mult with [142 7]
+2025/07/07 14:56:40 access 18
+2025/07/07 14:56:40 Executing ret with [16]
+2025/07/07 14:56:40 access 14
+2025/07/07 14:56:40 Executing pop with [146 7]
+2025/07/07 14:56:40 access 54
+2025/07/07 14:56:40 access 16
+2025/07/07 14:56:40 Executing mult with [142 7]
+2025/07/07 14:56:40 access 18
+2025/07/07 14:56:40 Executing ret with [16]
+2025/07/07 14:56:40 access 14
+2025/07/07 14:56:40 Executing pop with [146 7]
+2025/07/07 14:56:40 access 56
+2025/07/07 14:56:41 access 16
+2025/07/07 14:56:41 Executing mult with [142 7]
+2025/07/07 14:56:41 access 18
+2025/07/07 14:56:41 Executing ret with [16]
+2025/07/07 14:56:41 access 14
+2025/07/07 14:56:41 Executing pop with [146 7]
+2025/07/07 14:56:41 access 58
+2025/07/07 14:56:41 access 16
+2025/07/07 14:56:41 Executing mult with [142 7]
+2025/07/07 14:56:41 access 18
+2025/07/07 14:56:41 Executing ret with [16]
+2025/07/07 14:56:41 access 14
+2025/07/07 14:56:41 Executing pop with [146 7]
+2025/07/07 14:56:41 access 60
+2025/07/07 14:56:42 access 16
+2025/07/07 14:56:42 Executing mult with [142 7]
+2025/07/07 14:56:42 access 18
+2025/07/07 14:56:42 Executing ret with [16]
+2025/07/07 14:56:43 access 14
+2025/07/07 14:56:43 Executing pop with [146 7]
+2025/07/07 14:56:43 access 62
+2025/07/07 14:56:43 access 16
+2025/07/07 14:56:43 Executing mult with [142 7]
+2025/07/07 14:56:44 access 18
+2025/07/07 14:56:44 Executing ret with [16]
+2025/07/07 14:56:45 access 26
+2025/07/07 14:56:45 Executing stop with [11]
