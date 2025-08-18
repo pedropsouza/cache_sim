@@ -87,8 +87,14 @@
                   )))))))
           (progn
             (mapcar #'print-stats *cache*))
-          (let ((all-hits (reduce #'+ *cache* :key (lambda (x) (cache-sim-hit-count (cadr x))))))
-          (format t "~&Done!")))))
+          (let* ((all-hits (reduce #'+ *cache* :key (lambda (x) (cache-sim-hit-count (cadr x)))))
+                 (num-accesses (cache-sim-op-count (cadr (assoc :l1 cache-sim::*cache*))))
+                )
+            (format t "~&Overral hit rate: ~d/~d = ~,4f"
+                    all-hits num-accesses (/ all-hits num-accesses))
+            (format t "~&Overral miss rate: ~d/~d = ~,4f"
+                    (- num-accesses all-hits) num-accesses (/ (- num-accesses all-hits) num-accesses))
+            (format t "~&Done!")))))
 
 (defun sufficient-bits (num &optional change-notice-f)
         (let* ((bits (ceiling (log num 2)))
@@ -115,7 +121,7 @@
   (mapcar
     (lambda (num def)
       (cons
-        (intern (concatenate 'string "L" (prin1-to-string num)))
+        (intern (concatenate 'string "L" (prin1-to-string num)) (find-package :keyword))
         def))
     (alexandria:iota (length c-defs) :start 1)
     c-defs))
@@ -124,7 +130,6 @@
   (loop (print (eval (read)))))
 
 (defun main (&key (filepath nil) (cache-defs-str nil))
-  (print (uiop:command-line-arguments))
   (let*
     ((args (uiop:command-line-arguments))
      (filepath (or filepath (car (last args))))
