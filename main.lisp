@@ -1,4 +1,5 @@
 (in-package #:cache-sim)
+(require :uiop)
 ;(load "noback.lsp")
 (defun init-globals (&key addr-bits cache-bits-list)
   (defparameter *seen-addrs* (make-hash-table))
@@ -131,16 +132,18 @@
 
 (defun main (&key (filepath nil) (cache-defs-str nil))
   (let*
-    ((args (uiop:command-line-arguments))
+    ((args (or (uiop:command-line-arguments) (cdr (loop :for i :from 0 :below (si:argc) :collect (si:argv i)))))
      (filepath (or filepath (car (last args))))
+     (cache-defs-str-actual
+       (or
+         (uiop:split-string
+           cache-defs-str
+           :separator " ")
+         (if (> (length (butlast args)) 1) (butlast args) '("1024:32:1"))))
      (c-defs
        (give-level-names
          (mapcar #'parse-cache-definition
-                 (or
-                   (uiop:split-string
-                     cache-defs-str
-                     :separator " ")
-                   (butlast args)))))
+                 cache-defs-str-actual)))
      (addr-bits
        (sufficient-bits
          (reduce #'max 
