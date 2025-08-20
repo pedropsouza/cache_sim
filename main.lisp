@@ -132,7 +132,7 @@
 
 (defun main (&key (filepath nil) (cache-defs-str nil))
   (let*
-    ((args (or (uiop:command-line-arguments) (cdr (loop :for i :from 0 :below (si:argc) :collect (si:argv i)))))
+    ((args (uiop:command-line-arguments))
      (filepath (or filepath (car (last args))))
      (cache-defs-str-actual
        (or
